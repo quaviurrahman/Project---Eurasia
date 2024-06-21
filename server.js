@@ -1,14 +1,14 @@
-const express = require('express');
-const dotenv = require('dotenv');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
+import express from "express"
+import dotenv from "dotenv"
+import mongoose from "mongoose"
+import bodyParser from "body-parser"
 //const swaggerJsdoc = require('swagger-jsdoc');
 //const swaggerUi = require('swagger-ui-express');
-//const topicsRouter = require('./routes/topics.js');
+import productRouter from "./routes/product.js"
 //const postsRouter = require('./routes/posts.js');
 //const dashboardRouter = require('./routes/dashboard.js')
 //const userRouter = require('./routes/users.js')
-const cors = require ('cors');
+import cors from "cors"
 
 
 dotenv.config();
@@ -26,7 +26,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // Routes
-//app.use('/topics', topicsRouter);
+app.use('/products', productRouter);
 //app.use('/posts', postsRouter);
 //app.use('/dashboard', dashboardRouter);
 //app.use('/user', userRouter);
