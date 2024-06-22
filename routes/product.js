@@ -2,15 +2,17 @@ import express from "express"
 import {
     createProduct,
     getAllProduct,
-    getProductByShortCode,
-    activateProduct
+    queryProduct,
+    activateProduct,
+    deactivateProduct
 } from "../controllers/product.js"
 
 const router = express.Router()
 
 router.post("/create",createProduct)
 router.get("/getallproduct",getAllProduct)
-router.get("/getproductbyshortcode",getProductByShortCode)
+router.get("/queryProduct",queryProduct)
 router.post("/activateproduct/:productID",activateProduct)
+router.post("/deactivateproduct/:productID",deactivateProduct)
 
 export default router

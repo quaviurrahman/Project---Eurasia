@@ -1,4 +1,6 @@
 import products from "../models/products.js"
+import mongoose from "mongoose";
+
 import productUnitTypes from "../models/productUnitType.js"
 import stringify from "stringify"
 
@@ -21,6 +23,8 @@ try {
         }
     }
 
+
+
 export const getAllProduct = async (req, res) => {
     try {
         const productFullList = await products.find()
@@ -30,27 +34,59 @@ export const getAllProduct = async (req, res) => {
     }
 }
 
-export const getProductByShortCode = async (req, res) => {
+
+
+export const queryProduct = async (req, res) => {
     try {
-        const reqProductShortCode = req.body.productShortCode
-        const regex = new RegExp(reqProductShortCode, "i")
-        const filteredProductList = await products.find({productShortCode: regex})
-        if (filteredProductList.length === 0) {
+        const { productShortCode, productID, productLabelName, productDescription, productStatus } = req.body;
+
+        // Fetch all products from the database
+        const allProducts = await products.find();
+
+        // Filter products based on the provided criteria
+        const filteredProducts = allProducts.filter(product => {
+            let isMatch = true;
+            if (productShortCode && productShortCode.length !== 0) {
+                const regex1 = new RegExp(productShortCode, "i");
+                isMatch = isMatch && regex1.test(product.productShortCode);
+            }
+            if (productID && productID.length !== 0) {
+                if (mongoose.Types.ObjectId.isValid(productID)) {
+                    isMatch = isMatch && product._id.equals(new mongoose.Types.ObjectId(productID));
+                } else {
+                    isMatch = false;
+                }
+            }
+            if (productLabelName && productLabelName.length !== 0) {
+                const regex2 = new RegExp(productLabelName, "i");
+                isMatch = isMatch && regex2.test(product.productLabelName);
+            }
+            if (productDescription && productDescription.length !== 0) {
+                const regex3 = new RegExp(productDescription, "i");
+                isMatch = isMatch && regex3.test(product.productDescription);
+            }
+            if (productStatus && productStatus.length !== 0) {
+                isMatch = isMatch && product.productStatus === productStatus;
+            }
+            return isMatch;
+        });
+
+        if (filteredProducts.length === 0) {
             return res.status(404).json({ error: 'No products found' });
         }
-        
-        res.json(filteredProductList)
+
+        res.json(filteredProducts);
     } catch (err) {
-        res.status(400).json({error: err.message})
+        res.status(400).json({ error: err.message });
     }
-}
+};
+
+
 
 export const activateProduct = async (req, res) => {
     try {
         const product = await products.findById(req.params.productID)
-        console.log(product)
         const productStatus = product.productStatus
-        console.log(productStatus)
 
         if (productStatus == "inactive")
             {
@@ -58,6 +94,25 @@ export const activateProduct = async (req, res) => {
                 res.status(200).json({success: "Product has been activated successfully"})
             } 
             else {res.json({error: "Product is already activated!"})}
+            
+            }catch (err) {
+                res.status(400).json({error: err.message})
+        
+    }}
+
+
+
+    export const deactivateProduct = async (req, res) => {
+    try {
+        const product = await products.findById(req.params.productID)
+        const productStatus = product.productStatus
+
+        if (productStatus == "active")
+            {
+                const updatedProduct = await products.findByIdAndUpdate(req.params.productID, { productStatus: "inactive"},{new : true})
+                res.status(200).json({success: "Product has been deactivated successfully"})
+            } 
+            else {res.json({error: "Product is already deactivated!"})}
             
             }catch (err) {
                 res.status(400).json({error: err.message})
