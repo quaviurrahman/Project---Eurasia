@@ -1,5 +1,6 @@
 import products from "../models/products.js"
 import mongoose from "mongoose";
+import productUnits from "../models/productUnitType.js"
 
 import productUnitTypes from "../models/productUnitType.js"
 import stringify from "stringify"
@@ -120,3 +121,21 @@ export const activateProduct = async (req, res) => {
     }}
 
 ///////  Product Unit Type CREATE, UPDATE, ACTIVATE, DEACTIVATE, QUERY
+
+export const createProductUnit = async (req, res) => {
+    try {
+        const reqProductUnitTypeName = req.body.productUnitTypeName
+        const newProductUnit = new productUnits({
+            productUnitTypeName: reqProductUnitTypeName,
+            createdDate: Date(), 
+         })
+        await newProductUnit.save()
+        res.json({
+            status: 200,
+            response: "Successful",
+            message: "Product Unit Type Created Successfully",
+            productUnitType: newProductUnit
+        })} catch (err) {
+            res.status(400).json({ error: err.message });
+        }        
+    }

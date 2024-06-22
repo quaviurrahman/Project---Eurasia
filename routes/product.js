@@ -4,7 +4,8 @@ import {
     getAllProduct,
     queryProduct,
     activateProduct,
-    deactivateProduct
+    deactivateProduct,
+    createProductUnit
 } from "../controllers/product.js"
 
 const router = express.Router()
@@ -14,5 +15,7 @@ router.get("/getallproduct",getAllProduct)
 router.get("/queryProduct",queryProduct)
 router.post("/activateproduct/:productID",activateProduct)
 router.post("/deactivateproduct/:productID",deactivateProduct)
+
+router.post("/createproductunit",createProductUnit)
 
 export default router
