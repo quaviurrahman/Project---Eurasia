@@ -1,6 +1,7 @@
 import products from "../models/products.js"
 import mongoose from "mongoose";
 import productUnits from "../models/productUnitType.js"
+import productPriceType from "../models/productPriceTypes.js"
 
 import productUnitTypes from "../models/productUnitType.js"
 import stringify from "stringify"
@@ -138,4 +139,42 @@ export const createProductUnit = async (req, res) => {
         })} catch (err) {
             res.status(400).json({ error: err.message });
         }        
+    }
+
+export const getAllProductUnitType = async (req, res) => {
+    try {
+        const productUnitTypes = await productUnits.find()
+        res.json(productUnitTypes)
+    } catch (err) {
+        res.status(400).json({error: err.message})
+    }
+}
+
+///////  Product Price Type CREATE, UPDATE, ACTIVATE, DEACTIVATE, QUERY
+
+export const createProductPriceType = async (req, res) => {
+    try {
+        const reqProductPriceType = req.body.productPriceTypeName
+        const newProductPriceType = new productPriceType({
+            productPriceTypeName: reqProductPriceType,
+            createdDate: Date(), 
+         })
+        await newProductPriceType.save()
+        res.json({
+            status: 200,
+            response: "Successful",
+            message: "Product Price Type Created Successfully",
+            productPriceType: newProductPriceType
+        })} catch (err) {
+            res.status(400).json({ error: err.message });
+        }        
+    }
+
+    export const getAllProductPriceType = async (req, res) => {
+        try {
+            const productPriceTypes = await productPriceType.find()
+            res.json(productPriceTypes)
+        } catch (err) {
+            res.status(400).json({error: err.message})
+        }
     }
