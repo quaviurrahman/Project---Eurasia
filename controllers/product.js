@@ -2,9 +2,12 @@ import products from "../models/products.js"
 import mongoose from "mongoose";
 import productUnits from "../models/productUnitType.js"
 import productPriceType from "../models/productPriceTypes.js"
+import productPrices from "../models/productPrices.js"
+import changeLogs from "../models/changeLogs.js"
 
 import productUnitTypes from "../models/productUnitType.js"
 import stringify from "stringify"
+
 
 ///////  Product CREATE, QUERY, UPDATE, ACTIVATE, DEACTIVATE ///////
 
@@ -178,3 +181,47 @@ export const createProductPriceType = async (req, res) => {
             res.status(400).json({error: err.message})
         }
     }
+
+    ///////  Product Prices CREATE, UPDATE, QUERY
+
+    export const createProductPrices = async (req, res) => {
+        try {
+            const reqProductID = req.body.productID
+            const reqPriceType = req.body.productPriceType
+            const reqProductPrice = req.body.productPrice
+            
+            const newProductPrice = new productPrices ({
+                productID: reqProductID,
+                productPriceType: reqPriceType,
+                productPrice: reqProductPrice,
+                createdDate: Date()
+            })
+            const newChangeLog = new changeLogs({
+                ID: reqProductID,
+                IDtype: "ProductType",
+                prevValue: [0],
+                newValue: [reqProductPrice],
+                eventLogDesc: "New Price has been set!"
+            })
+            await newProductPrice.save()
+            await newChangeLog.save()
+            res.json({
+                status: 200,
+                response: "Successful",
+                message: "Price of the product price type was Created Successfully",
+                productPrice: newProductPrice,
+                createdDate: Date()
+            })
+        } catch (err) {
+                res.status(400).json({ error: err.message });
+            } 
+        }
+
+        export const getAllProductPrice = async (req, res) => {
+            try {
+                const allProductPrices = await productPrices.find()
+                res.json(allProductPrices)
+            } catch (err) {
+                res.status(400).json({error: err.message})
+            }
+        }

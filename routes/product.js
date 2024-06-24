@@ -8,7 +8,9 @@ import {
     createProductUnit,
     getAllProductUnitType,
     createProductPriceType,
-    getAllProductPriceType
+    getAllProductPriceType,
+    createProductPrices,
+    getAllProductPrice
 } from "../controllers/product.js"
 
 const router = express.Router()
@@ -24,5 +26,8 @@ router.get("/getallproductunittype",getAllProductUnitType)
 
 router.post("/createproductpricetype",createProductPriceType)
 router.get("/getallproductpricetype",getAllProductPriceType)
+
+router.post("/createproductprices",createProductPrices)
+router.get("/getallproductprices",getAllProductPrice)
 
 export default router

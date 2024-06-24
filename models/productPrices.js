@@ -1,10 +1,10 @@
-const mongoose = require('mongoose');
+import mongoose, { Schema } from "mongoose"
 
-const postSchema = new mongoose.Schema({
+const productPrices = new mongoose.Schema({
   productID: { type: mongoose.Schema.Types.ObjectId, ref:'products'},
   productPriceType: { type: mongoose.Schema.Types.ObjectId, ref:'productPricesType'},
-  productprice: { type: Number, required: true},
+  productPrice: { type: Number, required: true},
   createdDate: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model('productPrices', postSchema);
+export default mongoose.model("productPrices", productPrices)
