@@ -173,55 +173,79 @@ export const createProductPriceType = async (req, res) => {
         }        
     }
 
-    export const getAllProductPriceType = async (req, res) => {
-        try {
-            const productPriceTypes = await productPriceType.find()
-            res.json(productPriceTypes)
-        } catch (err) {
-            res.status(400).json({error: err.message})
-        }
+export const getAllProductPriceType = async (req, res) => {
+    try {
+        const productPriceTypes = await productPriceType.find()
+        res.json(productPriceTypes)
+    } catch (err) {
+        res.status(400).json({ error: err.message })
     }
+}
 
-    ///////  Product Prices CREATE, UPDATE, QUERY
+///////  Product Prices CREATE, UPDATE, QUERY
 
-    export const createProductPrices = async (req, res) => {
-        try {
-            const reqProductID = req.body.productID
-            const reqPriceType = req.body.productPriceType
-            const reqProductPrice = req.body.productPrice
-            
-            const newProductPrice = new productPrices ({
-                productID: reqProductID,
-                productPriceType: reqPriceType,
-                productPrice: reqProductPrice,
-                createdDate: Date()
-            })
-            const newChangeLog = new changeLogs({
-                ID: reqProductID,
-                IDtype: "ProductType",
-                prevValue: [0],
-                newValue: [reqProductPrice],
-                eventLogDesc: "New Price has been set!"
-            })
-            await newProductPrice.save()
-            await newChangeLog.save()
-            res.json({
-                status: 200,
-                response: "Successful",
-                message: "Price of the product price type was Created Successfully",
-                productPrice: newProductPrice,
-                createdDate: Date()
-            })
-        } catch (err) {
-                res.status(400).json({ error: err.message });
-            } 
-        }
+export const createProductPrices = async (req, res) => {
+    try {
+        const reqProductID = req.body.productID
+        const reqPriceType = req.body.productPriceType
+        const reqProductPrice = req.body.productPrice
 
-        export const getAllProductPrice = async (req, res) => {
-            try {
-                const allProductPrices = await productPrices.find()
-                res.json(allProductPrices)
-            } catch (err) {
-                res.status(400).json({error: err.message})
-            }
-        }
+        const newProductPrice = new productPrices({
+            productID: reqProductID,
+            productPriceType: reqPriceType,
+            productPrice: reqProductPrice,
+            createdDate: Date()
+        })
+        const newChangeLog = new changeLogs({
+            ID: reqPriceType,
+            IDtype: "ProductType",
+            prevValue: 0,
+            newValue: reqProductPrice,
+            eventLogDesc: "New Price has been set!"
+        })
+        await newProductPrice.save()
+        await newChangeLog.save()
+        res.json({
+            status: 200,
+            response: "Successful",
+            message: "Price of the product price type was Created Successfully",
+            productPrice: newProductPrice,
+            createdDate: Date()
+        })
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+}
+
+export const getAllProductPrice = async (req, res) => {
+    try {
+        const allProductPrices = await productPrices.find()
+        res.json(allProductPrices)
+    } catch (err) {
+        res.status(400).json({ error: err.message })
+    }
+}
+
+export const updateProductPrice = async (req, res) => {
+    try {
+        const reqProductID = req.body.productID
+        const reqPriceType = req.body.productPriceType
+        const reqProductPrice = req.body.productPrice
+        const filter = { productID: reqProductID, productPriceType: reqPriceType}
+        const prevValue = await productPrices.findOne(filter)
+
+        const newChangeLog = new changeLogs({
+            ID: reqPriceType,
+            IDtype: "ProductType",
+            prevValue: prevValue.productPrice,
+            newValue: reqProductPrice,
+            eventLogDesc: "Price has been updated!"
+        })
+        
+        const updatedProductPrice = await productPrices.findOneAndUpdate(filter, {productPrice: reqProductPrice}, {new: true})
+        await newChangeLog.save()
+        res.status(200).json({success: "Product price has been updated successfully"})
+    } catch(err) {
+        res.status(400).json({error: err.message})
+    }
+}
