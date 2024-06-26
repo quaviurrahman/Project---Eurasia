@@ -1,8 +1,11 @@
 import mongoose, { Schema } from "mongoose"
+import productUnitType from "./productUnitType.js"
+import productPriceType from "./productPriceTypes.js"
 
 const productPrices = new mongoose.Schema({
   productID: { type: mongoose.Schema.Types.ObjectId, ref:'products'},
-  productPriceType: { type: mongoose.Schema.Types.ObjectId, ref:'productPricesType'},
+  productPriceTypeID: { type: mongoose.Schema.Types.ObjectId, ref: 'productPricesType'},
+  productUnitTypeID: { type: mongoose.Schema.Types.ObjectId, ref:'productUnitType'},
   productPrice: { type: Number, required: true},
   createdDate: { type: Date, default: Date.now },
 });

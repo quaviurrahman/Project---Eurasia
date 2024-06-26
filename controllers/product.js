@@ -128,9 +128,8 @@ export const activateProduct = async (req, res) => {
 
 export const createProductUnit = async (req, res) => {
     try {
-        const reqProductUnitTypeName = req.body.productUnitTypeName
         const newProductUnit = new productUnits({
-            productUnitTypeName: reqProductUnitTypeName,
+            ...req.body,
             createdDate: Date(), 
          })
         await newProductUnit.save()
@@ -191,9 +190,7 @@ export const createProductPrices = async (req, res) => {
         const reqProductPrice = req.body.productPrice
 
         const newProductPrice = new productPrices({
-            productID: reqProductID,
-            productPriceType: reqPriceType,
-            productPrice: reqProductPrice,
+            ...req.body,
             createdDate: Date()
         })
         const newChangeLog = new changeLogs({
