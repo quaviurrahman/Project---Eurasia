@@ -1,0 +1,15 @@
+>>> Product
+        - CREATE product
+        - GET all product list with details
+        - QUERY product using filter parameters
+        - ACIVATE product
+        - DEACTIVATE product
+
+>>> Product Units
+        - CREATE product units
+        - GET all product unit list with details
+
+>>> Product Prices (Selling Prices)
+        - 
+
+

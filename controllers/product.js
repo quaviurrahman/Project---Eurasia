@@ -226,14 +226,15 @@ export const getAllProductPrice = async (req, res) => {
 export const updateProductPrice = async (req, res) => {
     try {
         const reqProductID = req.body.productID
-        const reqPriceType = req.body.productPriceType
+        const reqProductUnitTypeID = req.body.productUnitTypeID
+        const reqPriceTypeID = req.body.productPriceTypeID
         const reqProductPrice = req.body.productPrice
-        const filter = { productID: reqProductID, productPriceType: reqPriceType}
+        const filter = { productID: reqProductID, productPriceTypeID: reqPriceTypeID, productUnitTypeID:reqProductUnitTypeID}
         const prevValue = await productPrices.findOne(filter)
 
         const newChangeLog = new changeLogs({
-            ID: reqPriceType,
-            IDtype: "ProductType",
+            ID: prevValue._id,
+            IDtype: "ProductPrice",
             prevValue: prevValue.productPrice,
             newValue: reqProductPrice,
             eventLogDesc: "Price has been updated!"
