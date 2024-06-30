@@ -19,7 +19,7 @@
         - GET all product unit type list and details
 
 >>> Suppliers
-        - CREATE Suppliers
+        - CREATE Supplier
         - UPDATE Supplier
         - DELETE Supplier
 
