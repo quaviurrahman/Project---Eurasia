@@ -6,6 +6,7 @@ import bodyParser from "body-parser"
 //const swaggerUi = require('swagger-ui-express');
 import productRouter from "./routes/product.js"
 import logsRouter from "./routes/logs.js"
+import supplierRouter from "./routes/supplier.js"
 //const postsRouter = require('./routes/posts.js');
 //const dashboardRouter = require('./routes/dashboard.js')
 //const userRouter = require('./routes/users.js')
@@ -29,6 +30,7 @@ app.use(cors());
 // Routes
 app.use('/products', productRouter);
 app.use('/logs',logsRouter);
+app.use('/suppliers',supplierRouter);
 //app.use('/posts', postsRouter);
 //app.use('/dashboard', dashboardRouter);
 //app.use('/user', userRouter);

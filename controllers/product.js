@@ -4,6 +4,7 @@ import productUnits from "../models/productUnitType.js"
 import productPriceType from "../models/productPriceTypes.js"
 import productPrices from "../models/productPrices.js"
 import changeLogs from "../models/changeLogs.js"
+import productInventory from "../models/productInventory.js"
 
 import productUnitTypes from "../models/productUnitType.js"
 import stringify from "stringify"
@@ -244,6 +245,32 @@ export const updateProductPrice = async (req, res) => {
         await newChangeLog.save()
         res.status(200).json({success: "Product price has been updated successfully"})
     } catch(err) {
+        res.status(400).json({error: err.message})
+    }
+}
+
+
+////// CREATE, UPDATE, QUERY product Inventory
+
+export const updateInventory = async (req, res) => {
+    try {
+        const checkForExistingProductInventory = await productInventory.findOne({productID: req.body.productID})
+        if(checkForExistingProductInventory)
+            {
+                const updatedInventory = await productInventory.findOneAndUpdate({})        
+            }
+        const newInventory = new productInventory ({
+            ...req.body,
+            createdDate: Date(),
+        })
+        await newInventory.save()
+        res.json({
+            status: 200,
+            response: "Successfull",
+            message: "Inventory is update successfully!",
+            inventory: newInventory
+        })
+    } catch (err) {
         res.status(400).json({error: err.message})
     }
 }

@@ -3,8 +3,8 @@ import productUnitType from "./productUnitType.js"
 import productPriceType from "./productPriceTypes.js"
 
 const suppliers = new mongoose.Schema({
-  supplierName: { type: mongoose.Schema.Types.ObjectId, ref:'products'},
-  supplierShortCode: { type: mongoose.Schema.Types.ObjectId, ref: 'productPricesType'},
+  supplierName: { type: String, required: true},
+  supplierShortCode: { type: String, required: true},
   supplierAddress: { type: String, required: false},
   supplierEmail: {type: String, required: false},
   supplierContactDetails: {type: [{
