@@ -1,9 +1,9 @@
-const mongoose = require('mongoose');
+import mongoose, { Schema } from "mongoose"
 
-const postSchema = new mongoose.Schema({
+const productInventory = new mongoose.Schema({
   productID: { type: mongoose.Schema.Types.ObjectId, ref: 'products' },
   soh : { type: Number, required: true },
   createdDate: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model('productInventory', postSchema);
+export default mongoose.model("productInventory", productInventory)

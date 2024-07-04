@@ -11,7 +11,9 @@ import {
     getAllProductPriceType,
     createProductPrices,
     getAllProductPrice,
-    updateProductPrice
+    updateProductPrice,
+    createInventory,
+    updateInventory
 } from "../controllers/product.js"
 
 const router = express.Router()
@@ -32,4 +34,6 @@ router.post("/createproductprices",createProductPrices)
 router.get("/getallproductprices",getAllProductPrice)
 router.post("/updateproductprice",updateProductPrice)
 
+router.post("/createInventory",createInventory)
+router.post("/updateInventory",updateInventory)
 export default router

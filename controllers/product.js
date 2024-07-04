@@ -252,23 +252,47 @@ export const updateProductPrice = async (req, res) => {
 
 ////// CREATE, UPDATE, QUERY product Inventory
 
-export const updateInventory = async (req, res) => {
+export const createInventory = async (req, res) => {
     try {
         const checkForExistingProductInventory = await productInventory.findOne({productID: req.body.productID})
         if(checkForExistingProductInventory)
             {
-                const updatedInventory = await productInventory.findOneAndUpdate({})        
+                res.status(400).json("Product inventory already exists!")        
             }
-        const newInventory = new productInventory ({
-            ...req.body,
-            createdDate: Date(),
-        })
-        await newInventory.save()
+        else {
+            const newInventory = new productInventory ({
+                ...req.body,
+                createdDate: Date(),
+            })
+            await newInventory.save()
+            res.json({
+                status: 200,
+                response: "Successfull",
+                message: "Inventory is update successfully!",
+                inventory: newInventory
+            })    
+        }
+        
+    } catch (err) {
+        res.status(400).json({error: err.message})
+    }
+}
+
+
+
+export const updateInventory = async (req,res) => {
+    try {
+        const newInventoryCount = req.params.newInventoryCount
+        const findProductUnitTypes = await productUnits.findById(req.params.productUnitTypeID)
+        console.log(findProductUnitTypes)
+        const findProductInventory = await productInventory.findById({productID: findProductUnitTypes.productID})
+        const newSOHvalue = (findProductUnitTypes.productUnitInnerCount * newInventoryCount) + findProductInventory.soh
+        const updatedProductInventorySOH = await productInventory.findByIdAndUpdate({productID: findProductUnitTypes.productID},{soh: newSOHvalue},{new:true})
         res.json({
-            status: 200,
-            response: "Successfull",
-            message: "Inventory is update successfully!",
-            inventory: newInventory
+            status:200,
+            response:"Successfull",
+            message:"Product Inventory has been updated successfully!",
+            inventory: updatedProductInventorySOH
         })
     } catch (err) {
         res.status(400).json({error: err.message})
