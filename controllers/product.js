@@ -153,6 +153,18 @@ export const getAllProductUnitType = async (req, res) => {
     }
 }
 
+export const getProductUnitTypeByID = async (req, res) => {
+    try {
+        const filteredProductUnitType = await productUnits.findById(req.params.productUnitTypeID)
+        res.json({
+            status: 200,
+            response: "Successfull",
+            productUnitTypeDetails: filteredProductUnitType
+            })
+    } catch (err) {
+        res.status(400).json({error: err.message})
+    }
+}
 ///////  Product Price Type CREATE, UPDATE, ACTIVATE, DEACTIVATE, QUERY
 
 export const createProductPriceType = async (req, res) => {
@@ -282,12 +294,13 @@ export const createInventory = async (req, res) => {
 
 export const updateInventory = async (req,res) => {
     try {
-        const newInventoryCount = req.params.newInventoryCount
-        const findProductUnitTypes = await productUnits.findById(req.params.productUnitTypeID)
-        console.log(findProductUnitTypes)
-        const findProductInventory = await productInventory.findById({productID: findProductUnitTypes.productID})
+        const reqProductUnitTypeID =  req.body.productUnitTypeID
+        const findProductUnitTypes = await productUnits.findById(reqProductUnitTypeID)
+        const newInventoryCount = req.body.newInventoryCount
+        const retreivedProductID = new mongoose.Types.ObjectId(findProductUnitTypes.productID)
+        const findProductInventory = await productInventory.findOne({productID: retreivedProductID})
         const newSOHvalue = (findProductUnitTypes.productUnitInnerCount * newInventoryCount) + findProductInventory.soh
-        const updatedProductInventorySOH = await productInventory.findByIdAndUpdate({productID: findProductUnitTypes.productID},{soh: newSOHvalue},{new:true})
+        const updatedProductInventorySOH = await productInventory.findOneAndUpdate({productID: retreivedProductID},{soh: newSOHvalue},{new:true})
         res.json({
             status:200,
             response:"Successfull",

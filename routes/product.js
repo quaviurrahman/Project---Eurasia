@@ -13,7 +13,8 @@ import {
     getAllProductPrice,
     updateProductPrice,
     createInventory,
-    updateInventory
+    updateInventory,
+    getProductUnitTypeByID
 } from "../controllers/product.js"
 
 const router = express.Router()
@@ -26,6 +27,7 @@ router.post("/deactivateproduct/:productID",deactivateProduct)
 
 router.post("/createproductunit",createProductUnit)
 router.get("/getallproductunittype",getAllProductUnitType)
+router.get("/getProductUnitTypeByID/:productUnitTypeID",getProductUnitTypeByID)
 
 router.post("/createproductpricetype",createProductPriceType)
 router.get("/getallproductpricetype",getAllProductPriceType)
