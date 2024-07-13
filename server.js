@@ -7,6 +7,7 @@ import bodyParser from "body-parser"
 import productRouter from "./routes/product.js"
 import logsRouter from "./routes/logs.js"
 import supplierRouter from "./routes/supplier.js"
+import purchaseOrderRouter from "./routes/purchaseOrder.js"
 //const postsRouter = require('./routes/posts.js');
 //const dashboardRouter = require('./routes/dashboard.js')
 //const userRouter = require('./routes/users.js')
@@ -31,6 +32,7 @@ app.use(cors());
 app.use('/products', productRouter);
 app.use('/logs',logsRouter);
 app.use('/suppliers',supplierRouter);
+app.use('/orders,',purchaseOrderRouter);
 //app.use('/posts', postsRouter);
 //app.use('/dashboard', dashboardRouter);
 //app.use('/user', userRouter);
