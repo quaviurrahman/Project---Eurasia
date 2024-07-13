@@ -32,7 +32,7 @@ app.use(cors());
 app.use('/products', productRouter);
 app.use('/logs',logsRouter);
 app.use('/suppliers',supplierRouter);
-app.use('/orders,',purchaseOrderRouter);
+app.use('/orders',purchaseOrderRouter);
 //app.use('/posts', postsRouter);
 //app.use('/dashboard', dashboardRouter);
 //app.use('/user', userRouter);
