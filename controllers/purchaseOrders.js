@@ -38,3 +38,5 @@ export const addPurchaseOrderProduct = async (req,res) => {
         res.status(400).json({error: err.message})
     }
 }
+
+export const calculatePrice

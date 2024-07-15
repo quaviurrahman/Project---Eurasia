@@ -1,25 +1,31 @@
-import SerialPort from "serialport"
-import Readline from "@serialport/parser-readline"
 
-export const readScaleWeight = async (req,res) => {
-   try {
-    // Replace '/dev/ttyUSB0' with the correct port for your scale
-    const port = new SerialPort('/dev/ttyUSB0', {
-    baudRate: 9600, // Match this to your scale's specifications
-  });
-  
-  const parser = port.pipe(new Readline({ delimiter: '\r\n' }));
-  
-  port.on('error', (err) => {
-    console.error('Error: ', err.message);
-  });
-  
-  parser.on('data', (data) => {
-    console.log('Weight:', data);
-    // Integrate the data into your POS application as needed
-  });
-  
-   }catch (err) {
-    res.status(400).json({err: err.message})
-   } 
+import { SerialPort } from 'serialport';
+import { ReadlineParser } from '@serialport/parser-readline';
+import { MockBinding } from '@serialport/binding-mock';
+
+
+
+export const readScaleWeight = async (req, res) => {
+  try {
+    // Create the mock port
+    MockBinding.createPort('/dev/ttyUSB0', { echo: true, record: true });
+
+    const port = new SerialPort({
+      path: '/dev/ttyUSB0',
+      baudRate: 9600,
+      binding: MockBinding
+    });
+
+    const parser = port.pipe(new ReadlineParser({ delimiter: '\r\n' }));
+
+    port.on('error', (err) => {
+      console.error('Error:', err.message);
+    });
+
+    parser.on('data', (data) => {
+      console.log('Received data:', data);
+    });
+  } catch (err) {
+    res.status(400).json({ err: err.message });
+  }
 }
