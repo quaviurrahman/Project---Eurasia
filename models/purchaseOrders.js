@@ -11,6 +11,7 @@ const purchaseOrders = new mongoose.Schema({
     "productUnitTypeID": {type: mongoose.Schema.Types.ObjectId, ref:'productUnitType'},
     "quantity": {type: Number, required: false},
     "unitPrice": {type: Number, required: false},
+    "totalPrice": {type: Number, required: false}
   }],required: false}
 });
 

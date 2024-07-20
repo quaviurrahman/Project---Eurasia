@@ -6,8 +6,24 @@ import purchaseOrders from "../models/purchaseOrders.js"
 
 export const createPurchaseOrder = async (req, res) => {
 try {
+
+    const products = req.body.products
+    let totalOrderAmount = 0
+    let updatedProducts = await Promise.all(products.map(async product => {
+        const totalPrice = product.quantity * product.unitPrice
+        totalOrderAmount += totalPrice
+        return {
+            ...product,
+            totalPrice: totalPrice,
+            totalOrderAmount
+        }
+    }))
     const newPurchaseOrder = new purchaseOrders({
         ...req.body,
+        status: "draft",
+        totalOrderAmount: totalOrderAmount,
+        numberOfProducts: updatedProducts.length,
+        products: updatedProducts,
         createdDate: Date(),
     })
     await newPurchaseOrder.save()
@@ -22,21 +38,4 @@ try {
 }
 }
 
-export const addPurchaseOrderProduct = async (req,res) => {
-    try{
-        const purchaseOrderID = req.body.purchaseOrderID
-        const addedProducts = req.body.products
-        const purchaseOrder = await purchaseOrders.findByIdAndUpdate(purchaseOrderID,{products: addedProducts},{new: true})
-        res.json({
-            status:400,
-            response:"Successfull",
-            message:"Order Updated successfully",
-            purchaseOrder: purchaseOrder
-        })
-
-    }catch (err) {
-        res.status(400).json({error: err.message})
-    }
-}
-
-export const calculatePrice
+// export const calculatePrice
