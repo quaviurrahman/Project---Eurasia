@@ -5,6 +5,6 @@ import {
 
 const router = express.Router()
 
-router.get("/readscaleweight",readScaleWeight)
+router.post("/readscaleweight",readScaleWeight)
 
 export default router

@@ -4,54 +4,58 @@ import { MockBinding } from '@serialport/binding-mock';
 
 export const readScaleWeight = async (req, res) => {
   try {
-
-    const port = new SerialPort({
+// Function to read weight from the serial port
+function getLbs() {
+  return new Promise((resolve, reject) => {
+    const comPort = new SerialPort({
       path: '/dev/tty.usbserial-CYBLj137C01',
-      baudRate: 9600,  // adjustable based on switches
-      dataBits: 7,
-      stopBits: 2,
-      parity: 'none',  // adjust based on switch 3
-      rtscts: true,
-      autoOpen: false
+      baudRate: 9600,
+      parity: 'none',
+      dataBits: 8,
+      stopBits: 1,
+      flowControl: 'none'
     });
 
-    // Open the port manually to handle errors
-    port.open(function (err) {
-      if (err) {
-        return console.log('Error opening port:', err.message);
+    const parser = comPort.pipe(new ReadlineParser({ delimiter: '\r\n' }));
+    comPort.on('open', () => {
+      console.log('Serial Port opened');
+
+      // Send commands to the scale
+      comPort.write('\x02'); // STX (Start of Text)
+      console.log("stx sent")
+      setTimeout(() => comPort.write('P'), 1000); // Command to read weight
+      console.log("W sent")
+      setTimeout(() => comPort.write('\x0D'), 2000); // CR (Carriage Return)
+      console.log("CR sent")
+    });
+    
+    // Handle the data received from the scale
+    parser.on('data', line => {
+      console.log("Awaiting data....")
+      comPort.close();
+      console.log("Port Closed")
+      const trimmedLine = line.trim();
+      if (!isNaN(parseFloat(trimmedLine))) {
+        resolve(trimmedLine);
+      } else {
+        reject('Received data is not a number');
       }
-      console.log('Port is open');
     });
 
-    const parser = port.pipe(new ReadlineParser({ delimiter: '\r\n' }));
-    const commandKey = req.body.command
-    const message = Buffer.from(commandKey)
+    // Error handling
+    comPort.on('error', (err) => {
+      reject(err.message);
+    });
+  });
+}
 
-
-      // Write command to the port
-      port.write(message, (err) => {
-        if (err) {
-          console.error('Error sending command:', err);
-        } else {
-          console.log(`Command ${message} sent`);
-        }
-      });
-
-      // Listen for data
-      parser.on('data', data => {
-        console.log('Received data:', data);
-        parseResponse(data);
-      });
-
-      // Function to parse response from the scale
-      function parseResponse(data) {
-        if (data.startsWith('?')) {
-          console.error('Error or status message received:', data);
-          // Further handling based on status byte parsing
-        } else {
-          console.log('Valid weight data received:', data);
-        }
-      }
+// Usage of the getLbs function
+getLbs().then(weight => {
+  console.log(`Weight: ${weight} lbs`);
+}).catch(error => {
+  console.error('Error:', error);
+});
+    
   } catch (err) {
     res.status(400).json({ err: err.message });
   }
