@@ -62,13 +62,15 @@ export const queryPurchaseOrder = async (req, res) => {
                 else {
                     isMatch = false
                 }
-
             }
             if (status && status.length !== 0) {
                 isMatch  = isMatch && order.status === status
             }
             if (supplierID && supplierID.length !==0) {
-                isMatch = isMatch && order.supplierID === supplierID
+                isMatch = isMatch && order.supplierID == supplierID
+            }
+            else {
+                isMatch = false
             }
             return isMatch;
         })
